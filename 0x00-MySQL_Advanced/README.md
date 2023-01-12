@@ -1,0 +1,1 @@
+### some advanced MySQL sytaxes
