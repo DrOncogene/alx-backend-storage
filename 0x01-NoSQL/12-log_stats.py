@@ -1,20 +1,27 @@
 #!/usr/bin/env python3
 """
-computes log stats
+computes nginx log stats
+saved in a mongodb
 """
 from pymongo import MongoClient
-from pymongo.collection import Collection
 
 
+# connect to the db
 client = MongoClient('mongodb://127.0.0.1:27017')
-nginx_logs: Collection = client.logs.nginx
+# get the collection reference
+nginx_logs = client.logs.nginx
 
+# number of documents
 all_entries = len(list(nginx_logs.find()))
+# number of GET requests
 n_get = len(list(nginx_logs.find({'method': 'GET'})))
+# POST requests
 n_post = len(list(nginx_logs.find({'method': 'POST'})))
+# PUT requests
 n_put = len(list(nginx_logs.find({'method': 'PUT'})))
 n_patch = len(list(nginx_logs.find({'method': 'PATCH'})))
 n_delete = len(list(nginx_logs.find({'method': 'DELETE'})))
+# number of status checks
 n_statuses = len(list(nginx_logs.find({'method': 'GET', 'path': '/status'})))
 
 print(f'{all_entries} logs')
