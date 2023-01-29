@@ -8,7 +8,7 @@ from pymongo import MongoClient
 client = MongoClient('mongodb://127.0.0.1:27017')
 nginx_logs = client.logs.nginx
 
-all_entries = len(nginx_logs)
+all_entries = len(nginx_logs.find())
 n_get = len(nginx_logs.find({'method': 'GET'}))
 n_post = len(nginx_logs.find({'method': 'POST'}))
 n_put = len(nginx_logs.find({'method': 'PUT'}))
