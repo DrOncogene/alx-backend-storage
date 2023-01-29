@@ -6,4 +6,4 @@ updates a record
 
 def update_topics(mongo_coll, name, topics):
     """updates a mongo document"""
-    mongo_coll.update_one({"name": name}, {'$set': {"topics": topics}})
+    mongo_coll.update_many({"name": name}, {'$set': {"topics": topics}})
