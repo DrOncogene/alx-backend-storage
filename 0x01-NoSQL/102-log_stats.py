@@ -27,7 +27,8 @@ if __name__ == "__main__":
 
     sorted_ips = nginx_logs.aggregate([
       {'$group': {'_id': '$ip', 'count': {'$sum': 1}}},
-      {'$sort': {'count': -1}}
+      {'$sort': {'count': -1}},
+      {'$limit': 10}
     ])
 
     print(f'{all_entries} logs')
