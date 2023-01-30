@@ -14,8 +14,6 @@ if __name__ == "__main__":
 
     # number of documents
     all_entries = len(list(nginx_logs.find()))
-    for entry in nginx_logs.find({}, limit=5):
-        print(entry)
     # number of GET requests
     n_get = len(list(nginx_logs.find({'method': 'GET'})))
     # POST requests
