@@ -2,10 +2,9 @@
 """
 aggregating results
 """
-from pymongo.collection import Collection
 
 
-def top_students(mongo_coll: Collection):
+def top_students(mongo_coll):
     """sort by average scores"""
     match = mongo_coll.aggregate([
       {'$set': {'averageScore': {'$avg': '$topics.score'}}}
