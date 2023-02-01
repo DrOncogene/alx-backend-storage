@@ -3,17 +3,32 @@
 creates a Cache class
 """
 from uuid import uuid4
+from functools import wraps
 from typing import Union, Optional, Any, Callable
 
 import redis
 
 
+def count_calls(method: Callable) -> Callable[[Any], Any]:
+    """
+    count and store the number of
+    times a method is called
+    """
+    @wraps(method)
+    def wrapper(*args, **kwargs):
+        redis_db = args[0]._redis
+        redis_db.incr(method.__qualname__, 1)
+        return method
+    return wrapper
+
+
 class Cache():
-    """"""
+    """convenience wrapper around redi-py"""
     def __init__(self) -> None:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """stores data"""
         key = str(uuid4())
