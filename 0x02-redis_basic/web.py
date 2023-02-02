@@ -15,6 +15,6 @@ def get_page(url: str) -> str:
     db = redis.Redis()
     page = requests.get(url, timeout=1000)
     db.setex(url, 10, page.text)
-    db.incr(f'count:{url}', 1)
+    db.incr(f'count:{url}')
 
     return page.text
