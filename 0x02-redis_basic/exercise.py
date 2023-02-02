@@ -37,7 +37,7 @@ def call_history(method: Callable) -> Callable:
         self._redis.rpush(f'{key}:inputs', str(args[1:]))
         output = method(*args, **kwargs)
         self._redis.rpush(f'{key}:outputs', str(output))
-        return method
+        return output
     return wrapper
 
 
@@ -47,8 +47,8 @@ class Cache():
         self._redis = redis.Redis()
         self._redis.flushdb()
 
-    @count_calls
     @call_history
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """stores data"""
         key = str(uuid4())
@@ -71,3 +71,18 @@ class Cache():
     def get_int(self, key: str) -> int:
         """use get with int func"""
         return self.get(key, int)
+
+
+def replay(method: Callable):
+    """
+    displays the history of
+    method calls
+    """
+    db = redis.Redis()
+    key = method.__qualname__
+    num_of_calls = int(db.get(key))
+    call_inputs = db.lrange(f'{key}:inputs', 0, -1)
+    call_outputs = db.lrange(f'{key}:outputs', 0, -1)
+    print(f'{key} was called {num_of_calls} times:')
+    for inp, out in zip(call_inputs, call_outputs):
+        print(f"{key}(*{str(inp, 'utf-8')}) -> {str(out, 'utf-8')}")
