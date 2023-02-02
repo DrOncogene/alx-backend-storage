@@ -9,15 +9,15 @@ from typing import Union, Optional, Any, Callable
 import redis
 
 
-def count_calls(method: Callable) -> Callable[[Any], Any]:
+def count_calls(method: Callable) -> Callable:
     """
     count and store the number of
     times a method is called
     """
     @wraps(method)
     def wrapper(*args, **kwargs):
-        redis_db = args[0]._redis
-        redis_db.incr(method.__qualname__, 1)
+        self = args[0]
+        self._redis.incr(method.__qualname__, 1)
         return method
     return wrapper
 
