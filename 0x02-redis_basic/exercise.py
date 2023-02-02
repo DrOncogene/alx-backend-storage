@@ -14,10 +14,11 @@ def count_calls(method: Callable) -> Callable:
     count and store the number of
     times a method is called
     """
+    key = method.__qualname__
+
     @wraps(method)
     def wrapper(*args, **kwargs):
         self = args[0]
-        key = method.__qualname__
         self._redis.incr(key, 1)
         return method
     return wrapper
