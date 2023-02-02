@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
-fetches pages and save stats
+fetch and cache pages
 in redis
 """
 import redis
 import requests
 
+db = redis.Redis()
+
 
 def get_page(url: str) -> str:
     """
-    fetches pages and compute
-    stats
+    fetch and cache pages
     """
-    db = redis.Redis()
-    page = requests.get(url, timeout=1000)
-    db.setex(url, 10, page.text)
-    db.incr(f'count:{url}')
+    res = requests.get(url, timeout=1000)
+    db.setex(url.removeprefix('http://'), 10, res.text)
+    db.incrby(f'count:{url}', 1)
 
-    return page.text
+    return res.text
